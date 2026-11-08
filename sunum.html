@@ -139,7 +139,7 @@
   <!-- ÜST İLERLEME ÇUBUĞU -->
   <!-- ========================================================================= -->
   <div id="progress-bar-container" class="fixed top-0 left-0 w-full h-1 bg-slate-200 z-50">
-    <div id="progress-bar" class="h-full bg-blue-600 transition-all duration-300 w-[11%]"></div>
+    <div id="progress-bar" class="h-full bg-blue-600 transition-all duration-300 w-[12.5%]"></div>
   </div>
 
   <!-- ========================================================================= -->
@@ -183,7 +183,6 @@
           <option value="5">6. Neden Lojistik Regresyon?</option>
           <option value="6">7. Model Test Başarım Metrikleri</option>
           <option value="7">8. Parametre Etki Analizi (Odds Ratio)</option>
-          <option value="8">9. Canlı Karar Simülatörü & Sonuç</option>
         </select>
 
         <!-- Tam Ekran Butonu -->
@@ -359,7 +358,6 @@
                   <th class="py-3 px-3.5">Parametre</th>
                   <th class="py-3 px-3.5">Veri Tipi</th>
                   <th class="py-3 px-3.5">Finansal / Analitik Anlamı</th>
-                  <th class="py-3 px-3.5 text-center">Karar Yönü</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-100 text-slate-700">
@@ -368,42 +366,36 @@
                   <td class="py-3 px-3.5 font-bold font-mono text-blue-700">Credit_History</td>
                   <td class="py-3 px-3.5 text-slate-500">İkili (1 / 0)</td>
                   <td class="py-3 px-3.5 font-medium">Müşterinin geçmiş borçlarını zamanında ödeme disiplini (1: Temiz, 0: Sorunlu).</td>
-                  <td class="py-3 px-3.5 text-center"><span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-100 text-emerald-800">Çok Güçlü (+)</span></td>
                 </tr>
 
                 <tr class="hover:bg-slate-50/80 transition-colors">
                   <td class="py-3 px-3.5 font-bold font-mono text-blue-700">ApplicantIncome</td>
                   <td class="py-3 px-3.5 text-slate-500">Sürekli Sayısal</td>
                   <td class="py-3 px-3.5 font-medium">Başvuranın aylık nakit gelir seviyesi ($). Borç geri ödeme kapasitesini temsil eder.</td>
-                  <td class="py-3 px-3.5 text-center"><span class="px-2 py-0.5 rounded text-[11px] font-bold bg-blue-100 text-blue-800">Pozitif (+)</span></td>
                 </tr>
 
                 <tr class="hover:bg-slate-50/80 transition-colors">
                   <td class="py-3 px-3.5 font-bold font-mono text-blue-700">LoanAmount</td>
                   <td class="py-3 px-3.5 text-slate-500">Sürekli Sayısal</td>
                   <td class="py-3 px-3.5 font-medium">Talep edilen toplam kredi anapara miktarı (Bin $). Bankanın üstlendiği anapara riskidir.</td>
-                  <td class="py-3 px-3.5 text-center"><span class="px-2 py-0.5 rounded text-[11px] font-bold bg-rose-100 text-rose-800">Ters / Negatif (-)</span></td>
                 </tr>
 
                 <tr class="hover:bg-slate-50/80 transition-colors">
                   <td class="py-3 px-3.5 font-bold font-mono text-blue-700">Loan_Amount_Term</td>
                   <td class="py-3 px-3.5 text-slate-500">Sayısal (Ay)</td>
                   <td class="py-3 px-3.5 font-medium">Kredinin vadesi (Örn. 360 ay = 30 yıl). Standart konut kredisi periyodu.</td>
-                  <td class="py-3 px-3.5 text-center"><span class="px-2 py-0.5 rounded text-[11px] font-bold bg-slate-100 text-slate-700">Nötr (~0)</span></td>
                 </tr>
 
                 <tr class="hover:bg-slate-50/80 transition-colors">
                   <td class="py-3 px-3.5 font-bold font-mono text-blue-700">Education</td>
                   <td class="py-3 px-3.5 text-slate-500">İkili (1 / 0)</td>
                   <td class="py-3 px-3.5 font-medium">Başvuranın eğitim durumu (1: Lisans / Üniversite Mezunu, 0: Mezun Değil).</td>
-                  <td class="py-3 px-3.5 text-center"><span class="px-2 py-0.5 rounded text-[11px] font-bold bg-blue-100 text-blue-800">Pozitif (+)</span></td>
                 </tr>
 
                 <tr class="hover:bg-slate-50/80 transition-colors">
                   <td class="py-3 px-3.5 font-bold font-mono text-blue-700">Property_Area</td>
                   <td class="py-3 px-3.5 text-slate-500">Sıralı (0, 1, 2)</td>
                   <td class="py-3 px-3.5 font-medium">İkamet veya teminat bölgesi (0: Kırsal, 1: Yarı Kentsel, 2: Kentsel). Likidite göstergesi.</td>
-                  <td class="py-3 px-3.5 text-center"><span class="px-2 py-0.5 rounded text-[11px] font-bold bg-blue-100 text-blue-800">Hafif Pozitif (+)</span></td>
                 </tr>
 
               </tbody>
@@ -595,10 +587,10 @@
           </div>
 
           <div class="clean-card p-4 space-y-1.5 border-l-4 border-l-amber-500">
-            <div class="text-xs font-bold text-amber-700 uppercase">4. Odds Ratio (Kat Etkisi)</div>
-            <h3 class="text-sm font-bold text-slate-900">Risk Faktörünü Sayısallaştırır</h3>
+            <div class="text-xs font-bold text-amber-700 uppercase">4. Belirlenen Karar Eşiği (Threshold = 0.50 / %50)</div>
+            <h3 class="text-sm font-bold text-slate-900">Net Onay / Ret Karar Kriteri</h3>
             <p class="text-xs text-slate-600 leading-relaxed">
-              Katsayıların üsteli ($e^\beta$) doğrudan kat hesabı verir: Örneğin temiz kredi sicili, onay olasılığını <strong>tam 3.33 kat</strong> artırmaktadır.
+              Modelin hesapladığı Sigmoid olasılığı <strong>P &ge; 0.50 (%50 ve üzeri)</strong> ise başvuru <strong>Onaylanır (1)</strong>, altında kalırsa <strong>Reddedilir (0)</strong>. Bankanın risk iştahına göre bu eşik esnekçe yönetilebilir.
             </p>
           </div>
 
@@ -791,103 +783,6 @@
           </div>
         </div>
 
-      </div>
-    </section>
-
-    <!-- ===================================================================== -->
-    <!-- SLAYT 9: CANLI TAHMİN SİMÜLATÖRÜ VE GENEL SONUÇ -->
-    <!-- ===================================================================== -->
-    <section id="slide-8" class="slide">
-      <div class="space-y-5">
-        
-        <div class="border-b border-slate-200 pb-3">
-          <span class="text-xs font-bold uppercase tracking-wider text-blue-600">Uygulama & Simülasyon</span>
-          <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900">Canlı Karar Destek Simülatörü ve Genel Sonuç</h2>
-          <p class="text-xs sm:text-sm text-slate-600 mt-0.5">Eğitilen modelin gerçek matematiksel katsayılarıyla anlık kredi skoru hesaplayın (predict.py simülatörü):</p>
-        </div>
-
-        <!-- İnteraktif Panel -->
-        <div class="clean-card p-5 space-y-4">
-          <div class="flex items-center justify-between">
-            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
-              <span>⚙️</span> İnteraktif Kredi Değerlendirme Aracı
-            </h3>
-            <span class="text-[11px] font-mono text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
-              predict.py motoru
-            </span>
-          </div>
-
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
-            <div>
-              <label class="block text-slate-600 mb-1 font-semibold">Aylık Gelir ($)</label>
-              <input type="number" id="sim-gelir" value="6000" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono">
-            </div>
-
-            <div>
-              <label class="block text-slate-600 mb-1 font-semibold">Talep Kredi ($bin)</label>
-              <input type="number" id="sim-kredi" value="130" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono">
-            </div>
-
-            <div>
-              <label class="block text-slate-600 mb-1 font-semibold">Vade (Ay)</label>
-              <input type="number" id="sim-vade" value="360" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono">
-            </div>
-
-            <div>
-              <label class="block text-slate-600 mb-1 font-semibold">Kredi Sicili (Credit_History)</label>
-              <select id="sim-sicil" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="1">1 - Temiz Sicil (Düzenli Ödemiş)</option>
-                <option value="0">0 - Sorunlu / Gecikmeli</option>
-              </select>
-            </div>
-
-            <div>
-              <label class="block text-slate-600 mb-1 font-semibold">Eğitim Durumu</label>
-              <select id="sim-egitim" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="1">1 - Üniversite / Lisans Mezunu</option>
-                <option value="0">0 - Mezun Değil</option>
-              </select>
-            </div>
-
-            <div>
-              <label class="block text-slate-600 mb-1 font-semibold">İkamet Bölgesi</label>
-              <select id="sim-bolge" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="1">1 - Semiurban (Yarı Kentsel)</option>
-                <option value="2">2 - Urban (Şehir Merkezi)</option>
-                <option value="0">0 - Rural (Kırsal)</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Hesaplama Çıktı Kutusu -->
-          <div id="sim-sonuc-kutusu" class="rounded-xl p-4 border flex flex-col sm:flex-row items-center justify-between gap-3 transition-all bg-emerald-50 border-emerald-200">
-            <div>
-              <span class="text-[11px] uppercase font-bold text-slate-500 block">Model Kararı</span>
-              <div id="sim-karar-metni" class="text-lg font-black text-emerald-800">✅ KREDİ ONAYLANDI (Y)</div>
-              <p id="sim-aciklama" class="text-xs text-slate-600 mt-0.5">Model müşteri riskini düşük buldu ve onay kararı üretti.</p>
-            </div>
-
-            <div class="text-center sm:text-right">
-              <span class="text-[11px] uppercase font-bold text-slate-500 block">Hesaplanan Onay Olasılığı</span>
-              <div id="sim-olasilik" class="text-3xl font-black text-emerald-700 font-mono">%79.9</div>
-              <span class="text-[10px] text-slate-500 font-mono">Karar Eşiği: %50.0</span>
-            </div>
-          </div>
-
-          <!-- Senaryo Kısayolları -->
-          <div class="flex flex-wrap items-center justify-between gap-2 text-xs pt-1">
-            <span class="text-slate-500 font-medium">Örnek Senaryo Testleri:</span>
-            <div class="flex gap-2">
-              <button type="button" onclick="loadScenario(6000, 130, 360, 1, 1, 1)" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-blue-800 border border-slate-300 font-medium transition-colors">
-                Senaryo 1: Temiz Sicilli Müşteri
-              </button>
-              <button type="button" onclick="loadScenario(15000, 140, 360, 0, 1, 2)" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-rose-800 border border-slate-300 font-medium transition-colors">
-                Senaryo 2: Yüksek Gelirli / Bozuk Sicilli
-              </button>
-            </div>
-          </div>
-        </div>
-
         <!-- Proje Nihai Sonuç Özeti -->
         <div class="clean-card p-4 border-l-4 border-l-blue-600 space-y-1.5">
           <h4 class="text-xs font-bold uppercase tracking-wider text-blue-900 flex items-center gap-1.5">
@@ -918,7 +813,7 @@
 
       <div class="flex items-center gap-2">
         <div class="text-xs text-slate-500 font-mono font-medium">
-          Slayt <span id="current-slide-num" class="text-blue-700 font-bold">1</span> / <span id="total-slides-num">9</span>
+          Slayt <span id="current-slide-num" class="text-blue-700 font-bold">1</span> / <span id="total-slides-num">8</span>
         </div>
         <span class="hidden md:inline-block text-[11px] text-slate-400 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
           Klavye: ← / → veya Boşluk
@@ -936,7 +831,7 @@
   </footer>
 
   <!-- ========================================================================= -->
-  <!-- ETKİLEŞİM, SÜREÇ YÖNETİMİ VE MATEMATİK MOTORU (JAVASCRIPT) -->
+  <!-- ETKİLEŞİM VE SÜREÇ YÖNETİMİ (JAVASCRIPT) -->
   <!-- ========================================================================= -->
   <script>
     // -------------------------------------------------------------------------
@@ -986,7 +881,6 @@
 
     // Klavye Yön Tuşları
     document.addEventListener('keydown', (e) => {
-      // Input odaklıyken tuşları kilitleme
       if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
 
       if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
@@ -1043,87 +937,8 @@
       timerEl.textContent = `${mins}:${secs}`;
     }, 1000);
 
-    // -------------------------------------------------------------------------
-    // 3. CANLI LOJİSTİK REGRESYON MATEMATİK MOTORU (predict.py ile %100 Birebir)
-    // -------------------------------------------------------------------------
-    const MODEL_INTERCEPT = 0.78932475;
-    const MODEL_COEFS = [
-      0.05419478,   // ApplicantIncome
-      -0.07620587,  // LoanAmount
-      -0.00091903,  // Loan_Amount_Term
-      1.20355192,   // Credit_History
-      0.14601162,   // Education
-      0.04308889    // Property_Area
-    ];
-
-    const SCALER_MEANS = [5403.459, 145.752, 342.410, 0.855, 0.782, 1.037];
-    const SCALER_SCALES = [6104.065, 84.039, 64.376, 0.352, 0.413, 0.787];
-
-    function calculatePrediction() {
-      const gelir = parseFloat(document.getElementById('sim-gelir').value) || 0;
-      const kredi = parseFloat(document.getElementById('sim-kredi').value) || 0;
-      const vade = parseFloat(document.getElementById('sim-vade').value) || 360;
-      const sicil = parseFloat(document.getElementById('sim-sicil').value);
-      const egitim = parseFloat(document.getElementById('sim-egitim').value);
-      const bolge = parseFloat(document.getElementById('sim-bolge').value);
-
-      const rawValues = [gelir, kredi, vade, sicil, egitim, bolge];
-
-      // 1. Z-Skoru Standartlaştırması: z_i = (x_i - mean_i) / scale_i
-      let zTotal = MODEL_INTERCEPT;
-      for (let i = 0; i < rawValues.length; i++) {
-        const scaledVal = (rawValues[i] - SCALER_MEANS[i]) / SCALER_SCALES[i];
-        zTotal += scaledVal * MODEL_COEFS[i];
-      }
-
-      // 2. Sigmoid Fonksiyonu: P = 1 / (1 + e^-z)
-      const prob = 1 / (1 + Math.exp(-zTotal));
-      const probPercent = prob * 100;
-      const isApproved = prob >= 0.50;
-
-      // Arayüzü Güncelleme
-      const box = document.getElementById('sim-sonuc-kutusu');
-      const kararEl = document.getElementById('sim-karar-metni');
-      const olasilikEl = document.getElementById('sim-olasilik');
-      const aciklamaEl = document.getElementById('sim-aciklama');
-
-      olasilikEl.textContent = `%${probPercent.toFixed(1)}`;
-
-      if (isApproved) {
-        kararEl.textContent = "✅ KREDİ ONAYLANDI (Y)";
-        kararEl.className = "text-lg font-black text-emerald-800";
-        olasilikEl.className = "text-3xl font-black text-emerald-700 font-mono";
-        box.className = "rounded-xl p-4 border flex flex-col sm:flex-row items-center justify-between gap-3 transition-all bg-emerald-50 border-emerald-200";
-        aciklamaEl.textContent = "Müşteri risk profili güvenli bulundu; kredi başvurusu onaylandı.";
-      } else {
-        kararEl.textContent = "❌ KREDİ REDDEDİLDİ (N)";
-        kararEl.className = "text-lg font-black text-rose-800";
-        olasilikEl.className = "text-3xl font-black text-rose-700 font-mono";
-        box.className = "rounded-xl p-4 border flex flex-col sm:flex-row items-center justify-between gap-3 transition-all bg-rose-50 border-rose-200";
-        aciklamaEl.textContent = "Kredi geri ödeme olasılığı eşik değerin (%50) altında kaldı; riskli görüldü.";
-      }
-    }
-
-    // Input dinleyicileri
-    ['sim-gelir', 'sim-kredi', 'sim-vade', 'sim-sicil', 'sim-egitim', 'sim-bolge'].forEach(id => {
-      document.getElementById(id).addEventListener('input', calculatePrediction);
-      document.getElementById(id).addEventListener('change', calculatePrediction);
-    });
-
-    // Hazır Senaryo Yükleme
-    function loadScenario(gelir, kredi, vade, sicil, egitim, bolge) {
-      document.getElementById('sim-gelir').value = gelir;
-      document.getElementById('sim-kredi').value = kredi;
-      document.getElementById('sim-vade').value = vade;
-      document.getElementById('sim-sicil').value = sicil;
-      document.getElementById('sim-egitim').value = egitim;
-      document.getElementById('sim-bolge').value = bolge;
-      calculatePrediction();
-    }
-
-    // Başlangıç durumunu yükle
+    // Başlangıç slaytını göster
     showSlide(0);
-    calculatePrediction();
   </script>
 </body>
 </html>
