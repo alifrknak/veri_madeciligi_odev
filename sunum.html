@@ -182,7 +182,7 @@
           <option value="4">5. Ön İşleme: Bölme & Ölçekleme</option>
           <option value="5">6. Neden Lojistik Regresyon?</option>
           <option value="6">7. Model Test Başarım Metrikleri</option>
-          <option value="7">8. Parametre Etki Analizi (Odds Ratio)</option>
+          <option value="7">8. Parametre Etki Analizi: Katsayılar (β)</option>
         </select>
 
         <!-- Tam Ekran Butonu -->
@@ -237,7 +237,7 @@
           </div>
           <p class="text-xs text-slate-700 leading-relaxed">
             Bankacılık sektöründe kredi riskini (batık krediyi) minimize etmek ile potansiyel faiz geliri getirecek güvenilir müşterileri kaybetmemek arasındaki hassas dengeyi kurmaktır. 
-            Temel hedefimiz; başvuranın finansal ve demografik verilerini girdi alarak <strong>yasal regülasyonlara (BDDK, Basel II/III) tam uyumlu, kara kutu olmayan, %85+ test doğruluğu sağlayan</strong> ve her kararın arkasındaki matematiksel sebebi (Odds Ratio ile) <strong>şeffafça açıklayabilen</strong> bir karar destek sistemi kurmaktır.
+            Temel hedefimiz; başvuranın finansal ve demografik verilerini girdi alarak <strong>yasal regülasyonlara (BDDK, Basel II/III) tam uyumlu, kara kutu olmayan, %85+ test doğruluğu sağlayan</strong> ve her kararın arkasındaki matematiksel sebebi (Beta katsayıları ile) <strong>şeffafça açıklayabilen</strong> bir karar destek sistemi kurmaktır.
           </p>
         </div>
 
@@ -299,7 +299,7 @@
 
             <div class="p-2.5 rounded-lg bg-emerald-50/60 border border-emerald-200">
               <span class="font-bold text-emerald-800 block mb-0.5">4. Performans & Analiz</span>
-              <p class="text-slate-600 text-[11px] leading-snug">%85.37 test başarımı ve Odds Ratio ($e^\beta$) ile sonuca en çok etki eden faktörlerin şeffaf matematiksel analizi.</p>
+              <p class="text-slate-600 text-[11px] leading-snug">%85.37 test başarımı ve Beta katsayıları (β) ile sonuca en çok etki eden faktörlerin şeffaf matematiksel analizi.</p>
             </div>
           </div>
         </div>
@@ -350,7 +350,7 @@
             <div class="text-xs font-semibold text-slate-900">Matematik & Vektörel Cebir</div>
             <ul class="text-xs text-slate-600 space-y-1 list-disc list-inside">
               <li>Döngüsüz hızlı matris çarpımları</li>
-              <li>Odds Ratio için üstel hesaplama: <code>np.exp(β)</code></li>
+              <li>Vektörel üstel ve matematiksel hesaplamalar: <code>np.exp()</code></li>
               <li>Scikit-learn arkasındaki sayısal hesaplama motoru</li>
             </ul>
           </div>
@@ -718,11 +718,11 @@
         
         <div class="border-b border-slate-200 pb-3">
           <span class="text-xs font-bold uppercase tracking-wider text-blue-600">Açıklanabilirlik (Explainability)</span>
-          <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900">Parametre Etki Analizi: Katsayılar (β) ve Odds Ratio</h2>
-          <p class="text-xs sm:text-sm text-slate-600 mt-0.5">Hangi faktör kredi onay ihtimalini kaç kat artırıyor veya azaltıyor?</p>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900">Parametre Etki Analizi: Katsayılar (β)</h2>
+          <p class="text-xs sm:text-sm text-slate-600 mt-0.5">Hangi faktör kredi onay kararını nasıl ve hangi yönde etkiliyor?</p>
         </div>
 
-        <!-- Katsayılar ve Odds Ratio Tablosu -->
+        <!-- Katsayılar Tablosu -->
         <div class="clean-card overflow-hidden">
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
@@ -730,8 +730,7 @@
                 <tr>
                   <th class="py-2.5 px-3">Sıra</th>
                   <th class="py-2.5 px-3">Parametre</th>
-                  <th class="py-2.5 px-3">Beta (β)</th>
-                  <th class="py-2.5 px-3">Odds Ratio (e^β)</th>
+                  <th class="py-2.5 px-3">Beta Katsayısı (β)</th>
                   <th class="py-2.5 px-3">Etki Yönü</th>
                   <th class="py-2.5 px-3">Finansal Karar Anlamı</th>
                 </tr>
@@ -742,54 +741,48 @@
                   <td class="py-2.5 px-3 font-bold text-emerald-800 font-sans">1</td>
                   <td class="py-2.5 px-3 font-bold text-emerald-800">Credit_History</td>
                   <td class="py-2.5 px-3 text-emerald-700 font-bold">+1.2036</td>
-                  <td class="py-2.5 px-3 font-black text-emerald-800 text-xs">3.332x</td>
                   <td class="py-2.5 px-3 font-sans font-bold text-emerald-800">Çok Güçlü (+)</td>
-                  <td class="py-2.5 px-3 font-sans text-slate-800 text-xs">Temiz sicil onay ihtimalini <strong>3.33 kat</strong> artırır! En belirleyici faktör.</td>
+                  <td class="py-2.5 px-3 font-sans text-slate-800 text-xs">Temiz sicil, kredi onay şansını en güçlü artıran <strong>en belirleyici faktördür</strong>.</td>
                 </tr>
 
                 <tr>
                   <td class="py-2.5 px-3 text-slate-500 font-sans">2</td>
                   <td class="py-2.5 px-3 font-bold text-blue-800">Education</td>
-                  <td class="py-2.5 px-3 text-blue-700">+0.1460</td>
-                  <td class="py-2.5 px-3 font-bold text-blue-800">1.157x</td>
-                  <td class="py-2.5 px-3 font-sans text-blue-800">Pozitif (+)</td>
-                  <td class="py-2.5 px-3 font-sans text-slate-700">Üniversite mezuniyeti onay şansını <strong>%15.7</strong> artırır.</td>
+                  <td class="py-2.5 px-3 text-blue-700 font-bold">+0.1460</td>
+                  <td class="py-2.5 px-3 font-sans text-blue-800 font-bold">Pozitif (+)</td>
+                  <td class="py-2.5 px-3 font-sans text-slate-700">Üniversite mezuniyeti kredi onay olasılığını pozitif yönde destekler.</td>
                 </tr>
 
                 <tr>
                   <td class="py-2.5 px-3 text-slate-500 font-sans">3</td>
                   <td class="py-2.5 px-3 font-bold text-blue-800">ApplicantIncome</td>
-                  <td class="py-2.5 px-3 text-blue-700">+0.0542</td>
-                  <td class="py-2.5 px-3 font-bold text-blue-800">1.056x</td>
-                  <td class="py-2.5 px-3 font-sans text-blue-800">Pozitif (+)</td>
-                  <td class="py-2.5 px-3 font-sans text-slate-700">Aylık nakit gelir arttıkça ödeme gücü onay ihtimalini destekler.</td>
+                  <td class="py-2.5 px-3 text-blue-700 font-bold">+0.0542</td>
+                  <td class="py-2.5 px-3 font-sans text-blue-800 font-bold">Pozitif (+)</td>
+                  <td class="py-2.5 px-3 font-sans text-slate-700">Aylık nakit gelir arttıkça borç geri ödeme gücü onay ihtimalini artırır.</td>
                 </tr>
 
                 <tr>
                   <td class="py-2.5 px-3 text-slate-500 font-sans">4</td>
                   <td class="py-2.5 px-3 font-bold text-blue-800">Property_Area</td>
-                  <td class="py-2.5 px-3 text-blue-700">+0.0431</td>
-                  <td class="py-2.5 px-3 font-bold text-blue-800">1.044x</td>
-                  <td class="py-2.5 px-3 font-sans text-blue-800">Pozitif (+)</td>
-                  <td class="py-2.5 px-3 font-sans text-slate-700">Kentsel teminat likiditesi onay şansını hafif artırır.</td>
+                  <td class="py-2.5 px-3 text-blue-700 font-bold">+0.0431</td>
+                  <td class="py-2.5 px-3 font-sans text-blue-800 font-bold">Pozitif (+)</td>
+                  <td class="py-2.5 px-3 font-sans text-slate-700">Kentsel ve gelişmiş bölge teminat likiditesi onay şansını hafif artırır.</td>
                 </tr>
 
                 <tr class="bg-slate-50/50">
                   <td class="py-2.5 px-3 text-slate-400 font-sans">5</td>
                   <td class="py-2.5 px-3 font-bold text-slate-600">Loan_Amount_Term</td>
                   <td class="py-2.5 px-3 text-slate-500">-0.0009</td>
-                  <td class="py-2.5 px-3 text-slate-600">0.999x</td>
-                  <td class="py-2.5 px-3 font-sans text-slate-500">Nötr (~0)</td>
-                  <td class="py-2.5 px-3 font-sans text-slate-500">Odds ~1.000 olduğundan karar üzerinde etkisi neredeyse sıfırdır.</td>
+                  <td class="py-2.5 px-3 font-sans text-slate-500 font-bold">Nötr (~0)</td>
+                  <td class="py-2.5 px-3 font-sans text-slate-500">Katsayısı sıfıra son derece yakın olduğu için onay üzerinde etkisi neredeyse sıfırdır.</td>
                 </tr>
 
                 <tr class="bg-rose-50/50">
                   <td class="py-2.5 px-3 font-bold text-rose-800 font-sans">6</td>
                   <td class="py-2.5 px-3 font-bold text-rose-800">LoanAmount</td>
                   <td class="py-2.5 px-3 text-rose-700 font-bold">-0.0762</td>
-                  <td class="py-2.5 px-3 font-black text-rose-800 text-xs">0.927x</td>
                   <td class="py-2.5 px-3 font-sans font-bold text-rose-800">Ters / Negatif (-)</td>
-                  <td class="py-2.5 px-3 font-sans text-slate-800 text-xs">Talep edilen borç büyüdükçe anapara riski arttığı için onay şansı her birimde <strong>%7.3 azalır</strong>.</td>
+                  <td class="py-2.5 px-3 font-sans text-slate-800 text-xs">Talep edilen kredi tutarı arttıkça anapara riski yükseldiğinden onay şansı azalır.</td>
                 </tr>
 
               </tbody>
