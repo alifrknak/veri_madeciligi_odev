@@ -1,9 +1,9 @@
-# YÜKSEK LİSANS VERİ MADENCİLİĞİ PROJE RAPORU
+# VERİ MADENCİLİĞİ PROJE RAPORU
 ## Lojistik Regresyon ile Bireysel Kredi Onay Sınıflandırması ve Parametre Etki Analizi
 
 ---
 
-**Öğrenci:** Yüksek Lisans Veri Madenciliği Dersi  
+**Ders:** Veri Madenciliği Projesi  
 **Veri Seti Sahibi & Kaynağı:** Kaggle - *Loan Prediction Problem Dataset* (Veri Sahibi: **altruistdelhite04**)  
 **Kullanılan Model:** Lojistik Regresyon (Logistic Regression)  
 **Doğrulama Yöntemi:** %80 Eğitim (Train), %20 Test (Hold-out)  
@@ -58,7 +58,7 @@ Lojistik Regresyonun en büyük üstünlüğü, katsayıların üstel değeri ($
    - `Loan_Amount_Term` (Vade): En yaygın standart konut kredisi vadesi olan **mod (360 ay)** ile dolduruldu.
    - `Credit_History` (Kredi Geçmişi): Veri setinde en çok görülen sınıf olan **mod (1.0 - Temiz Sicil)** ile tamamlandı.
 2. **Kategorik Değişkenlerin Kodlanması (Encoding):**
-   - `Education`: Lisans/Lisansüstü (`Graduate = 1`), Mezun Değil (`Not Graduate = 0`).
+   - `Education`: Üniversite Mezunu (`Graduate = 1`), Mezun Değil (`Not Graduate = 0`).
    - `Property_Area`: Kırsal (`Rural = 0`), Yarı Kentsel (`Semiurban = 1`), Şehir Merkezi (`Urban = 2`).
    - `Loan_Status`: Kredi Onaylandı (`Y = 1`), Kredi Reddedildi (`N = 0`).
 3. **Eğitim ve Test Ayrımı:**
