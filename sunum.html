@@ -214,58 +214,94 @@
     <!-- SLAYT 1: KAPAK VE GİRİŞ ÖZETİ -->
     <!-- ===================================================================== -->
     <section id="slide-0" class="slide active">
-      <div class="space-y-6">
+      <div class="space-y-4">
         
-        <div class="text-center space-y-3 pt-2">
-          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold uppercase tracking-wider">
+        <!-- Başlık -->
+        <div class="text-center space-y-1.5 pt-1">
+          <div class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold uppercase tracking-wider">
             <span>🎓 Yüksek Lisans Dönem Projesi</span>
           </div>
-          <h1 class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-snug">
+          <h1 class="text-xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
             Lojistik Regresyon ile Bireysel Kredi Onay Sınıflandırması
           </h1>
-          <p class="text-sm sm:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            Bankacılık risk yönetiminde şeffaf, açıklanabilir ve yasal düzenlemelerle uyumlu veri madenciliği karar destek mimarisi.
+          <p class="text-xs sm:text-sm text-slate-600 max-w-2xl mx-auto">
+            Bankacılık Risk Yönetiminde Şeffaf ve Açıklanabilir Karar Destek Modeli
           </p>
         </div>
 
-        <!-- 4 Temel Başarı Metriği -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5 pt-2">
-          
-          <div class="clean-card p-4 text-center border-t-4 border-t-blue-600">
-            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Veri Seti</span>
-            <div class="text-xl font-bold text-slate-900">614 Başvuru</div>
-            <span class="text-[11px] text-slate-500">Kaggle Finans Verisi</span>
+        <!-- 1. AMACIMIZ NEDİR? -->
+        <div class="clean-card p-4 bg-white border-l-4 border-l-blue-600 space-y-1.5">
+          <div class="flex items-center gap-2">
+            <span class="w-5 h-5 rounded-full bg-blue-100 text-blue-700 text-xs flex items-center justify-center font-bold">🎯</span>
+            <h2 class="text-xs sm:text-sm font-bold text-slate-900 uppercase tracking-wide">1. Amacımız Nedir?</h2>
           </div>
-
-          <div class="clean-card p-4 text-center border-t-4 border-t-emerald-600">
-            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Test Doğruluğu</span>
-            <div class="text-2xl font-black text-emerald-600">%85.37</div>
-            <span class="text-[11px] text-slate-500">123 Test Kaydında</span>
-          </div>
-
-          <div class="clean-card p-4 text-center border-t-4 border-t-indigo-600">
-            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 block mb-1">ROC-AUC Skoru</span>
-            <div class="text-2xl font-black text-indigo-600">0.8248</div>
-            <span class="text-[11px] text-slate-500">Yüksek Ayırt Edicilik</span>
-          </div>
-
-          <div class="clean-card p-4 text-center border-t-4 border-t-amber-500">
-            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Onay Yakalama</span>
-            <div class="text-2xl font-black text-amber-600">%98.82</div>
-            <span class="text-[11px] text-slate-500">84/85 Güvenli Müşteri</span>
-          </div>
-
+          <p class="text-xs text-slate-700 leading-relaxed">
+            Bankacılık sektöründe kredi riskini (batık krediyi) minimize etmek ile potansiyel faiz geliri getirecek güvenilir müşterileri kaybetmemek arasındaki hassas dengeyi kurmaktır. 
+            Temel hedefimiz; başvuranın finansal ve demografik verilerini girdi alarak <strong>yasal regülasyonlara (BDDK, Basel II/III) tam uyumlu, kara kutu olmayan, %85+ test doğruluğu sağlayan</strong> ve her kararın arkasındaki matematiksel sebebi (Odds Ratio ile) <strong>şeffafça açıklayabilen</strong> bir karar destek sistemi kurmaktır.
+          </p>
         </div>
 
-        <!-- Problem Tanımı ve Hedef -->
-        <div class="clean-card p-5 bg-white space-y-2 border-l-4 border-l-blue-600">
-          <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
-            <span class="text-blue-600 font-black">🎯</span> Problem Tanımı ve Projenin Amacı
-          </h2>
-          <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
-            Bankacılıkta kredi kararları; batık kredi riskini düşürmek ile karlı müşteriyi kaybetmemek arasındaki dengeye dayanır. 
-            Bu projede amaç; başvuru sahibinin <strong>6 temel finansal ve demografik parametresini</strong> girdi alarak, bankacılık regülasyonlarına (BDDK, Basel II/III) tam uyumlu, hem <strong>%85+ doğruluk üreten</strong> hem de her kararın arkasındaki matematiksel sebebi (Odds Ratio ile) <strong>şeffafça açıklayan</strong> bir sınıflandırma modeli kurmaktır.
-          </p>
+        <!-- 2. VERİ SETİMİZİ TANIYALIM -->
+        <div class="clean-card p-4 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 text-xs flex items-center justify-center font-bold">📊</span>
+              <h2 class="text-xs sm:text-sm font-bold text-slate-900 uppercase tracking-wide">2. Veri Setimizi Tanıyalım (Dataset Overview)</h2>
+            </div>
+            <span class="text-[11px] font-mono text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+              Kaggle Financial Loan Dataset
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
+            <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+              <span class="text-slate-500 block text-[11px]">Toplam Hacim & Yapı</span>
+              <div class="font-bold text-slate-900 text-sm mt-0.5">614 Gerçek Başvuru</div>
+              <p class="text-slate-600 text-[11px] mt-0.5">Sayısal gelir, talep edilen kredi ve metin tabanlı kategorik özellikleri içeren heterojen veri yapısı.</p>
+            </div>
+
+            <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+              <span class="text-slate-500 block text-[11px]">Hedef Değişken (Loan_Status)</span>
+              <div class="font-bold text-slate-900 text-sm mt-0.5">%68.7 Onay / %31.3 Ret</div>
+              <p class="text-slate-600 text-[11px] mt-0.5">422 Onay (Y), 192 Ret (N). Gerçek bankacılık dağılımını yansıtan doğal dengesiz sınıf yapısı.</p>
+            </div>
+
+            <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+              <span class="text-slate-500 block text-[11px]">Kritik Girdi Özellikleri</span>
+              <div class="font-bold text-slate-900 text-sm mt-0.5">6 Temel Parametre</div>
+              <p class="text-slate-600 text-[11px] mt-0.5">Kredi geçmişi (sicil), aylık gelir, talep tutarı, vade süresi, eğitim düzeyi ve gayrimenkul konumu.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. ADIM ADIM NELER YAPACAĞIZ? -->
+        <div class="clean-card p-4 space-y-2.5">
+          <div class="flex items-center gap-2">
+            <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 text-xs flex items-center justify-center font-bold">🚀</span>
+            <h2 class="text-xs sm:text-sm font-bold text-slate-900 uppercase tracking-wide">3. Adım Adım Neler Yapacağız? (Proje Yol Haritası)</h2>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+            <div class="p-2.5 rounded-lg bg-blue-50/60 border border-blue-200">
+              <span class="font-bold text-blue-800 block mb-0.5">1. Veri Ön İşleme</span>
+              <p class="text-slate-600 text-[11px] leading-snug">Eksik verileri aykırılara dirençli medyan ve mod ile tamamlama; kategorik verileri sayısallaştırma (encoding).</p>
+            </div>
+
+            <div class="p-2.5 rounded-lg bg-indigo-50/60 border border-indigo-200">
+              <span class="font-bold text-indigo-800 block mb-0.5">2. Bölme & Ölçekleme</span>
+              <p class="text-slate-600 text-[11px] leading-snug">Sınıf oranını koruyan %80/%20 katmanlı ayrım (stratify) ve data leakage önleyen StandardScaler.</p>
+            </div>
+
+            <div class="p-2.5 rounded-lg bg-amber-50/60 border border-amber-200">
+              <span class="font-bold text-amber-800 block mb-0.5">3. Model & Eşik (0.50)</span>
+              <p class="text-slate-600 text-[11px] leading-snug">Lojistik Regresyon eğitimi ve %50 karar eşiğiyle (threshold = 0.50) olasılıktan ikili sınıflandırma kararı üretme.</p>
+            </div>
+
+            <div class="p-2.5 rounded-lg bg-emerald-50/60 border border-emerald-200">
+              <span class="font-bold text-emerald-800 block mb-0.5">4. Performans & Analiz</span>
+              <p class="text-slate-600 text-[11px] leading-snug">%85.37 test başarımı ve Odds Ratio ($e^\beta$) ile sonuca en çok etki eden faktörlerin şeffaf matematiksel analizi.</p>
+            </div>
+          </div>
         </div>
 
       </div>
