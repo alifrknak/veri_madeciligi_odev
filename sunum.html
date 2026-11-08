@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Veri Madenciliği Proje Sunumu | Kredi Onay Sınıflandırması</title>
+  <!-- Tailwind CSS -->
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    /* ==========================================================================
+       AKADEMİK VE AYDINLIK SUNUM TEMASI (SINIF & PROJEKSİYON İÇİN OPTİMİZE EDİLMİŞ)
+       ========================================================================== */
+    :root {
+      --bg-page: #f8fafc;
+      --bg-surface: #ffffff;
+      --border-subtle: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --text-heading: #0f172a;
+      --text-body: #334155;
+      --text-muted: #64748b;
+      --color-primary: #1e40af;
+      --color-primary-light: #eff6ff;
+      --color-emerald: #059669;
+      --color-emerald-light: #ecfdf5;
+      --color-rose: #dc2626;
+      --color-rose-light: #fef2f2;
+      --color-amber: #d97706;
+      --color-amber-light: #fffbeb;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-body);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Slayt Geçişleri */
+    .slide {
+      display: none;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+    }
+
+    .slide.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Rapor Görünümü Modu (Tüm slaytlar alt alta yazdırılabilir formatta) */
+    body.report-mode .slide {
+      display: block !important;
+      opacity: 1 !important;
+      transform: none !important;
+      margin-bottom: 3.5rem;
+      border-bottom: 2px dashed #cbd5e1;
+      padding-bottom: 3rem;
+    }
+
+    body.report-mode #slide-controls,
+    body.report-mode #progress-bar-container {
+      display: none !important;
+    }
+
+    /* Kart ve Yüzey Stilleri */
+    .clean-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .clean-card:hover {
+      border-color: #cbd5e1;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+    }
+
+    .tag-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.25rem 0.625rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    /* Özel Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    /* Projeksiyon Odaklı Yüksek Kontrast Tablolar */
+    table th {
+      color: #1e293b;
+      font-weight: 700;
+      background-color: #f1f5f9;
+    }
+
+    @media print {
+      body {
+        background: #ffffff !important;
+      }
+      .slide {
+        display: block !important;
+        opacity: 1 !important;
+        page-break-after: always;
+      }
+      #slide-controls, header {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-50 text-slate-800 selection:bg-blue-600 selection:text-white">
+
+  <!-- ========================================================================= -->
+  <!-- ÜST İLERLEME ÇUBUĞU -->
+  <!-- ========================================================================= -->
+  <div id="progress-bar-container" class="fixed top-0 left-0 w-full h-1 bg-slate-200 z-50">
+    <div id="progress-bar" class="h-full bg-blue-600 transition-all duration-300 w-[11%]"></div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- ÜST NAVİGASYON VE KONTROL BAŞLIĞI -->
+  <!-- ========================================================================= -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 px-4 py-2.5 sm:px-6 shadow-xs">
+    <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- Logo ve Proje Adı -->
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow-xs">
+          VM
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-sm sm:text-base text-slate-900 tracking-tight">Veri Madenciliği Semineri</span>
+            <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">Yüksek Lisans</span>
+          </div>
+          <p class="text-xs text-slate-500 hidden sm:block">Lojistik Regresyon ile Bireysel Kredi Onay Sınıflandırması & Parametre Analizi</p>
+        </div>
+      </div>
+
+      <!-- Slayt Gezgini, Süre Ölçer ve Araçlar -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        
+        <!-- Sunum Sayacı (Sınıf İçi Süre Yönetimi) -->
+        <div id="timer-badge" class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200 text-slate-600 text-xs font-mono font-medium" title="Sunum Süresi">
+          <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span id="presentation-timer">00:00</span>
+        </div>
+
+        <!-- Slayt Seçim Menüsü -->
+        <select id="slide-select" class="bg-white border border-slate-300 text-slate-700 text-xs sm:text-sm rounded-lg px-2.5 py-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-colors">
+          <option value="0">1. Kapak & Giriş Özeti</option>
+          <option value="1">2. Teknoloji Tercihi: Python & Kütüphaneler</option>
+          <option value="2">3. Veri Seti & Seçilen 6 Parametre</option>
+          <option value="3">4. Ön İşleme: Eksik Veri & Kodlama</option>
+          <option value="4">5. Ön İşleme: Bölme & Ölçekleme</option>
+          <option value="5">6. Neden Lojistik Regresyon?</option>
+          <option value="6">7. Model Test Başarım Metrikleri</option>
+          <option value="7">8. Parametre Etki Analizi (Odds Ratio)</option>
+          <option value="8">9. Canlı Karar Simülatörü & Sonuç</option>
+        </select>
+
+        <!-- Tam Ekran Butonu -->
+        <button id="fullscreen-btn" class="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 p-1.5 rounded-lg text-xs font-medium transition-colors" title="Tam Ekran (F)">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+          </svg>
+        </button>
+
+        <!-- Rapor / Sunum Modu -->
+        <button id="mode-toggle-btn" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors shadow-2xs">
+          <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <span id="mode-btn-text" class="hidden sm:inline">Rapor Modu</span>
+        </button>
+
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- ANA İÇERİK KONTEYNERİ (SLAYTLAR) -->
+  <!-- ========================================================================= -->
+  <main class="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col justify-center">
+
+    <!-- ===================================================================== -->
+    <!-- SLAYT 1: KAPAK VE GİRİŞ ÖZETİ -->
+    <!-- ===================================================================== -->
+    <section id="slide-0" class="slide active">
+      <div class="space-y-6">
+        
+        <div class="text-center space-y-3 pt-2">
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold uppercase tracking-wider">
+            <span>🎓 Yüksek Lisans Dönem Projesi</span>
+          </div>
+          <h1 class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-snug">
+            Lojistik Regresyon ile Bireysel Kredi Onay Sınıflandırması
+          </h1>
+          <p class="text-sm sm:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed">
+            Bankacılık risk yönetiminde şeffaf, açıklanabilir ve yasal düzenlemelerle uyumlu veri madenciliği karar destek mimarisi.
+          </p>
+        </div>
+
+        <!-- 4 Temel Başarı Metriği -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5 pt-2">
+          
+          <div class="clean-card p-4 text-center border-t-4 border-t-blue-600">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Veri Seti</span>
+            <div class="text-xl font-bold text-slate-900">614 Başvuru</div>
+            <span class="text-[11px] text-slate-500">Kaggle Finans Verisi</span>
+          </div>
+
+          <div class="clean-card p-4 text-center border-t-4 border-t-emerald-600">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Test Doğruluğu</span>
+            <div class="text-2xl font-black text-emerald-600">%85.37</div>
+            <span class="text-[11px] text-slate-500">123 Test Kaydında</span>
+          </div>
+
+          <div class="clean-card p-4 text-center border-t-4 border-t-indigo-600">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 block mb-1">ROC-AUC Skoru</span>
+            <div class="text-2xl font-black text-indigo-600">0.8248</div>
+            <span class="text-[11px] text-slate-500">Yüksek Ayırt Edicilik</span>
+          </div>
+
+          <div class="clean-card p-4 text-center border-t-4 border-t-amber-500">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Onay Yakalama</span>
+            <div class="text-2xl font-black text-amber-600">%98.82</div>
+            <span class="text-[11px] text-slate-500">84/85 Güvenli Müşteri</span>
+          </div>
+
+        </div>
+
+        <!-- Problem Tanımı ve Hedef -->
+        <div class="clean-card p-5 bg-white space-y-2 border-l-4 border-l-blue-600">
+          <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+            <span class="text-blue-600 font-black">🎯</span> Problem Tanımı ve Projenin Amacı
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+            Bankacılıkta kredi kararları; batık kredi riskini düşürmek ile karlı müşteriyi kaybetmemek arasındaki dengeye dayanır. 
+            Bu projede amaç; başvuru sahibinin <strong>6 temel finansal ve demografik parametresini</strong> girdi alarak, bankacılık regülasyonlarına (BDDK, Basel II/III) tam uyumlu, hem <strong>%85+ doğruluk üreten</strong> hem de her kararın arkasındaki matematiksel sebebi (Odds Ratio ile) <strong>şeffafça açıklayan</strong> bir sınıflandırma modeli kurmaktır.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- SLAYT 2: NEDEN PYTHON VE KÜTÜPHANELER? (KISA VE ÖZ) -->
+    <!-- ===================================================================== -->
+    <section id="slide-1" class="slide">
+      <div class="space-y-5">
+        
+        <div class="border-b border-slate-200 pb-3">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600">Teknoloji Tercihi</span>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900">Neden Python ve Seçilen Kütüphaneler?</h2>
+          <p class="text-xs sm:text-sm text-slate-600 mt-0.5">Finansal modelleme ve veri madenciliğinde endüstri standardı araçlar kullanılmıştır.</p>
+        </div>
+
+        <!-- Python Tercihi Kısa Özet -->
+        <div class="clean-card p-4 bg-blue-50/50 border-blue-200">
+          <p class="text-xs sm:text-sm text-slate-800 leading-relaxed">
+            <strong class="text-blue-800">Python Tercih Nedeni:</strong> C/C++ düzeyinde optimize edilmiş lineer cebir altyapısı (BLAS/LAPACK) ve zengin veri bilimi ekosistemi sayesinde hem hızlı prototipleme hem de güvenilir matematiksel analiz sağlar.
+          </p>
+        </div>
+
+        <!-- 3 Temel Kütüphane Kartları -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+          
+          <div class="clean-card p-4 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-bold text-blue-700">Pandas</span>
+              <span class="text-[10px] font-mono bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded">v2.x</span>
+            </div>
+            <div class="text-xs font-semibold text-slate-900">Veri Manipülasyonu & Temizlik</div>
+            <ul class="text-xs text-slate-600 space-y-1 list-disc list-inside">
+              <li>Tablosal veri okuma ve filtreleme</li>
+              <li>Medyan ve mod ile eksik veri tamamlama</li>
+              <li><code>.map()</code> ile hızlı kategorik sayısallaştırma</li>
+            </ul>
+          </div>
+
+          <div class="clean-card p-4 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-bold text-indigo-700">NumPy</span>
+              <span class="text-[10px] font-mono bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded">v1.24+</span>
+            </div>
+            <div class="text-xs font-semibold text-slate-900">Matematik & Vektörel Cebir</div>
+            <ul class="text-xs text-slate-600 space-y-1 list-disc list-inside">
+              <li>Döngüsüz hızlı matris çarpımları</li>
+              <li>Odds Ratio için üstel hesaplama: <code>np.exp(β)</code></li>
+              <li>Scikit-learn arkasındaki sayısal hesaplama motoru</li>
+            </ul>
+          </div>
+
+          <div class="clean-card p-4 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-bold text-emerald-700">Scikit-Learn</span>
+              <span class="text-[10px] font-mono bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded">v1.3+</span>
+            </div>
+            <div class="text-xs font-semibold text-slate-900">Model Eğitimi & Değerlendirme</div>
+            <ul class="text-xs text-slate-600 space-y-1 list-disc list-inside">
+              <li>L-BFGS optimizasyonlu Lojistik Regresyon</li>
+              <li>Katmanlı veri bölme (<code>stratify=y</code>)</li>
+              <li>Z-skor ölçekleme ve başarım metrikleri</li>
+            </ul>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- SLAYT 3: VERİ SETİ VE SEÇİLEN 6 PARAMETRE (SADECE SEÇİLEN 6 PARAMETRE) -->
+    <!-- ===================================================================== -->
+    <section id="slide-2" class="slide">
+      <div class="space-y-5">
+        
+        <div class="border-b border-slate-200 pb-3">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600">Değişken Mimarisi</span>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900">Modelde Kullanılan 6 Temel Parametre ve Anlamları</h2>
+          <p class="text-xs sm:text-sm text-slate-600 mt-0.5">Kredi risk değerlendirmesinde kullanılan 6 parametrenin finansal ve analitik anlamları:</p>
+        </div>
+
+        <!-- 6 Parametrenin Temiz ve Sade Tablosu -->
+        <div class="clean-card overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="border-b border-slate-200 bg-slate-50 text-slate-700 uppercase text-[11px]">
+                <tr>
+                  <th class="py-3 px-3.5">Parametre</th>
+                  <th class="py-3 px-3.5">Veri Tipi</th>
+                  <th class="py-3 px-3.5">Finansal / Analitik Anlamı</th>
+                  <th class="py-3 px-3.5 text-center">Karar Yönü</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 text-slate-700">
+                
+                <tr class="hover:bg-slate-50/80 transition-colors">
+                  <td class="py-3 px-3.5 font-bold font-mono text-blue-700">Credit_History</td>
+                  <td class="py-3 px-3.5 text-slate-500">İkili (1 / 0)</td>
+                  <td class="py-3 px-3.5 font-medium">Müşterinin geçmiş borçlarını zamanında ödeme disiplini (1: Temiz, 0: Sorunlu).</td>
+                  <td class="py-3 px-3.5 text-center"><span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-100 text-emerald-800">Çok Güçlü (+)</span></td>
+                </tr>
+
+                <tr class="hover:bg-slate-50/80 transition-colors">
+                  <td class="py-3 px-3.5 font-bold font-mono text-blue-700">ApplicantIncome</td>
+                  <td class="py-3 px-3.5 text-slate-500">Sürekli Sayısal</td>
+                  <td class="py-3 px-3.5 font-medium">Başvuranın aylık nakit gelir seviyesi ($). Borç geri ödeme kapasitesini temsil eder.</td>
+                  <td class="py-3 px-3.5 text-center"><span class="px-2 py-0.5 rounded text-[11px] font-bold bg-blue-100 text-blue-800">Pozitif (+)</span></td>
+                </tr>
+
+                <tr class="hover:bg-slate-50/80 transition-colors">
+                  <td class="py-3 px-3.5 font-bold font-mono text-blue-700">LoanAmount</td>
+                  <td class="py-3 px-3.5 text-slate-500">Sürekli Sayısal</td>
+                  <td class="py-3 px-3.5 font-medium">Talep edilen toplam kredi anapara miktarı (Bin $). Bankanın üstlendiği anapara riskidir.</td>
+                  <td class="py-3 px-3.5 text-center"><span class="px-2 py-0.5 rounded text-[11px] font-bold bg-rose-100 text-rose-800">Ters / Negatif (-)</span></td>
+                </tr>
+
+                <tr class="hover:bg-slate-50/80 transition-colors">
+                  <td class="py-3 px-3.5 font-bold font-mono text-blue-700">Loan_Amount_Term</td>
+                  <td class="py-3 px-3.5 text-slate-500">Sayısal (Ay)</td>
+                  <td class="py-3 px-3.5 font-medium">Kredinin vadesi (Örn. 360 ay = 30 yıl). Standart konut kredisi periyodu.</td>
+                  <td class="py-3 px-3.5 text-center"><span class="px-2 py-0.5 rounded text-[11px] font-bold bg-slate-100 text-slate-700">Nötr (~0)</span></td>
+                </tr>
+
+                <tr class="hover:bg-slate-50/80 transition-colors">
+                  <td class="py-3 px-3.5 font-bold font-mono text-blue-700">Education</td>
+                  <td class="py-3 px-3.5 text-slate-500">İkili (1 / 0)</td>
+                  <td class="py-3 px-3.5 font-medium">Başvuranın eğitim durumu (1: Lisans / Üniversite Mezunu, 0: Mezun Değil).</td>
+                  <td class="py-3 px-3.5 text-center"><span class="px-2 py-0.5 rounded text-[11px] font-bold bg-blue-100 text-blue-800">Pozitif (+)</span></td>
+                </tr>
+
+                <tr class="hover:bg-slate-50/80 transition-colors">
+                  <td class="py-3 px-3.5 font-bold font-mono text-blue-700">Property_Area</td>
+                  <td class="py-3 px-3.5 text-slate-500">Sıralı (0, 1, 2)</td>
+                  <td class="py-3 px-3.5 font-medium">İkamet veya teminat bölgesi (0: Kırsal, 1: Yarı Kentsel, 2: Kentsel). Likidite göstergesi.</td>
+                  <td class="py-3 px-3.5 text-center"><span class="px-2 py-0.5 rounded text-[11px] font-bold bg-blue-100 text-blue-800">Hafif Pozitif (+)</span></td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <p class="text-[11px] text-slate-500 text-center italic">
+          * Bu 6 parametre bankacılıkta Finansal Güç, Borç Sadakati ve Teminat Likiditesini doğrudan ve dengeli bir şekilde temsil eder.
+        </p>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- SLAYT 4: VERİ ÖN İŞLEME - EKSİK VERİ & KODLAMA (KISA VE ÖZ) -->
+    <!-- ===================================================================== -->
+    <section id="slide-3" class="slide">
+      <div class="space-y-5">
+        
+        <div class="border-b border-slate-200 pb-3">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600">Veri Hazırlığı | Aşama 1</span>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900">Eksik Veri Doldurma ve Kategorik Kodlama</h2>
+          <p class="text-xs sm:text-sm text-slate-600 mt-0.5">Veri satırlarını silmeden koruyarak modele uygun sayısal formata getirme adımları.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          
+          <!-- Eksik Veri Tamamlama -->
+          <div class="clean-card p-4 space-y-3">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 text-xs flex items-center justify-center font-bold">1</span>
+              <h3 class="text-sm font-bold text-slate-900">Eksik Veri Doldurma (Imputation)</h3>
+            </div>
+            
+            <div class="space-y-2 text-xs">
+              <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                <div class="font-bold text-slate-800">LoanAmount ➔ Medyan (128.0)</div>
+                <p class="text-slate-600 mt-0.5">Uç ve aykırı kredilerden (outliers) etkilenmemesi için ortalama yerine medyan seçildi.</p>
+              </div>
+
+              <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                <div class="font-bold text-slate-800">Loan_Amount_Term ➔ Mod (360 Ay)</div>
+                <p class="text-slate-600 mt-0.5">Konut kredilerinde başvuruların %85'i standart 30 yıllık (360 ay) vadedir.</p>
+              </div>
+
+              <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                <div class="font-bold text-slate-800">Credit_History ➔ Mod (1.0)</div>
+                <p class="text-slate-600 mt-0.5">Başvuruların %84'ü temiz sicile sahiptir (çoğunluk sınıfı atandı).</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Kategorik Kodlama -->
+          <div class="clean-card p-4 space-y-3">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 text-xs flex items-center justify-center font-bold">2</span>
+              <h3 class="text-sm font-bold text-slate-900">Kategorik Kodlama (Encoding)</h3>
+            </div>
+            
+            <div class="space-y-2 text-xs">
+              <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                <div class="font-bold text-slate-800">Education (İkili / Binary)</div>
+                <div class="font-mono text-blue-700 text-[11px] mt-0.5">'Graduate' ➔ 1 &nbsp;|&nbsp; 'Not Graduate' ➔ 0</div>
+                <p class="text-slate-600 mt-0.5">Üniversite mezuniyeti ikili göstergeye dönüştürüldü.</p>
+              </div>
+
+              <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                <div class="font-bold text-slate-800">Property_Area (Sıralı / Ordinal)</div>
+                <div class="font-mono text-blue-700 text-[11px] mt-0.5">'Rural' ➔ 0 &nbsp;|&nbsp; 'Semiurban' ➔ 1 &nbsp;|&nbsp; 'Urban' ➔ 2</div>
+                <p class="text-slate-600 mt-0.5">Bölgeler kentsel gelişmişlik ve likiditeye göre sıralandı.</p>
+              </div>
+
+              <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                <div class="font-bold text-slate-800">Loan_Status (Hedef Değişken)</div>
+                <div class="font-mono text-emerald-700 text-[11px] mt-0.5">'Y' (Onay) ➔ 1 &nbsp;|&nbsp; 'N' (Ret) ➔ 0</div>
+                <p class="text-slate-600 mt-0.5">Lojistik modelin hedef etiketleri 1 ve 0 yapıldı.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- SLAYT 5: VERİ ÖN İŞLEME - BÖLME VE ÖLÇEKLEME -->
+    <!-- ===================================================================== -->
+    <section id="slide-4" class="slide">
+      <div class="space-y-5">
+        
+        <div class="border-b border-slate-200 pb-3">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600">Veri Hazırlığı | Aşama 2</span>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900">Katmanlı Bölme ve Standartlaştırma</h2>
+          <p class="text-xs sm:text-sm text-slate-600 mt-0.5">Veri sızıntısını (Data Leakage) önleyerek adil katsayı karşılaştırması sağlama.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          
+          <!-- Bölme Kartı -->
+          <div class="clean-card p-4 space-y-2.5">
+            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+              <span class="text-blue-600">✂️</span> Katmanlı Bölme (%80 Eğitim / %20 Test)
+            </h3>
+            
+            <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200 font-mono text-[11px] text-blue-800">
+              train_test_split(..., test_size=0.20, stratify=y)
+            </div>
+
+            <ul class="text-xs text-slate-600 space-y-1.5 list-disc list-inside">
+              <li><strong>Eğitim (491 Satır) / Test (123 Satır):</strong> Model 123 satırı ilk kez test aşamasında gördü.</li>
+              <li><strong class="text-slate-900">stratify=y Parametresi:</strong> Verideki Onay (%68.7) ve Ret (%31.3) oranı eğitim ve teste <strong>birebir eşit oranda</strong> yansıtıldı.</li>
+              <li><strong class="text-slate-900">random_state=42:</strong> Sonuçların akademik olarak birebir tekrarlanabilirliği garantilendi.</li>
+            </ul>
+          </div>
+
+          <!-- Standartlaştırma Kartı -->
+          <div class="clean-card p-4 space-y-2.5">
+            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+              <span class="text-indigo-600">⚖️</span> StandardScaler & Veri Sızıntısı Koruması
+            </h3>
+            
+            <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200 font-mono text-[11px] text-indigo-800 text-center">
+              Z = (X - Ortalama) / Standart_Sapma
+            </div>
+
+            <ul class="text-xs text-slate-600 space-y-1.5 list-disc list-inside">
+              <li><strong>Neden Ölçekleme?</strong> Gelir (5.000$) ile Kredi Sicili (0 veya 1) aynı denklemde yer alırken büyük sayıların dominasyonunu önler.</li>
+              <li><strong class="text-rose-700">Veri Sızıntısı (Data Leakage) Önleme:</strong> <code>scaler.fit()</code> <strong>yalnızca eğitim verisine</strong> uygulandı. Test verisi eğitim parametreleriyle dönüştürüldü.</li>
+              <li><strong>Adil Karşılaştırma:</strong> Katsayılar (Beta) standart sapma bazında eşit ölçekte yorumlanabilir hale geldi.</li>
+            </ul>
+          </div>
+
+        </div>
+
+        <!-- Adım Akış Özeti -->
+        <div class="p-3 bg-white border border-slate-200 rounded-xl flex items-center justify-between text-xs text-slate-600 text-center">
+          <span class="font-medium">1. Ham CSV (614)</span>
+          <span class="text-slate-400">➔</span>
+          <span class="font-medium">2. Imputation</span>
+          <span class="text-slate-400">➔</span>
+          <span class="font-medium">3. Encoding</span>
+          <span class="text-slate-400">➔</span>
+          <span class="font-medium">4. Stratified Split</span>
+          <span class="text-slate-400">➔</span>
+          <span class="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">5. StandardScaler (Model Hazır)</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- SLAYT 6: NEDEN LOJİSTİK REGRESYON? (ÇOK DAHA KISA ANLATIM) -->
+    <!-- ===================================================================== -->
+    <section id="slide-5" class="slide">
+      <div class="space-y-5">
+        
+        <div class="border-b border-slate-200 pb-3">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600">Model Tercihi</span>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900">Neden Lojistik Regresyon (Logistic Regression)?</h2>
+          <p class="text-xs sm:text-sm text-slate-600 mt-0.5">Bankacılık risk modellemesinde Lojistik Regresyonun 4 temel üstünlüğü:</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          
+          <div class="clean-card p-4 space-y-1.5 border-l-4 border-l-blue-600">
+            <div class="text-xs font-bold text-blue-700 uppercase">1. Olasılık Çıktısı (0 - 1)</div>
+            <h3 class="text-sm font-bold text-slate-900">Net Güven Skoru Üretir</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Sigmoid formülü ile sadece "Onay/Ret" demez; <em>"Bu müşterinin krediyi geri ödeme şansı %79.9'dur"</em> şeklinde esnek ve risk eşiği ayarlanabilir olasılık üretir.
+            </p>
+          </div>
+
+          <div class="clean-card p-4 space-y-1.5 border-l-4 border-l-emerald-600">
+            <div class="text-xs font-bold text-emerald-700 uppercase">2. Yasal Açıklanabilirlik</div>
+            <h3 class="text-sm font-bold text-slate-900">Kara Kutu (Black-Box) Değildir</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              BDDK ve Basel regülasyonlarına tam uygundur. Reddedilen müşteriye red sebebi matematiksel katsayılarla şeffaf biçimde sunulabilir.
+            </p>
+          </div>
+
+          <div class="clean-card p-4 space-y-1.5 border-l-4 border-l-indigo-600">
+            <div class="text-xs font-bold text-indigo-700 uppercase">3. Aşırı Öğrenme Direnci</div>
+            <h3 class="text-sm font-bold text-slate-900">Küçük Veride Yüksek Genelleme</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              614 satırlık veri setlerinde derin yapay sinir ağları ezberleme (overfitting) yaparken, Lojistik Regresyon test kümesinde %85.37 doğrulukla sağlam genelleme yapmıştır.
+            </p>
+          </div>
+
+          <div class="clean-card p-4 space-y-1.5 border-l-4 border-l-amber-500">
+            <div class="text-xs font-bold text-amber-700 uppercase">4. Odds Ratio (Kat Etkisi)</div>
+            <h3 class="text-sm font-bold text-slate-900">Risk Faktörünü Sayısallaştırır</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Katsayıların üsteli ($e^\beta$) doğrudan kat hesabı verir: Örneğin temiz kredi sicili, onay olasılığını <strong>tam 3.33 kat</strong> artırmaktadır.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- SLAYT 7: MODEL TEST BAŞARIM METRİKLERİ VE SONUÇLAR -->
+    <!-- ===================================================================== -->
+    <section id="slide-6" class="slide">
+      <div class="space-y-5">
+        
+        <div class="border-b border-slate-200 pb-3">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600">Performans Raporu</span>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900">Model Test Başarım Metrikleri ve Sonuçlar</h2>
+          <p class="text-xs sm:text-sm text-slate-600 mt-0.5">123 satırlık bağımsız test kümesi üzerinde elde edilen kesin metrikler:</p>
+        </div>
+
+        <!-- 4 Büyük Metrik Kartı -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
+          
+          <div class="clean-card p-4 text-center">
+            <span class="text-[11px] uppercase font-bold text-slate-500 block mb-0.5">Doğruluk (Accuracy)</span>
+            <div class="text-2xl sm:text-3xl font-black text-emerald-600">%85.37</div>
+            <span class="text-[11px] text-slate-500 mt-1 block">123 başvurudan 105 doğru</span>
+          </div>
+
+          <div class="clean-card p-4 text-center">
+            <span class="text-[11px] uppercase font-bold text-slate-500 block mb-0.5">ROC-AUC Skoru</span>
+            <div class="text-2xl sm:text-3xl font-black text-blue-700">0.8248</div>
+            <span class="text-[11px] text-slate-500 mt-1 block">Yüksek risk ayırt etme gücü</span>
+          </div>
+
+          <div class="clean-card p-4 text-center">
+            <span class="text-[11px] uppercase font-bold text-slate-500 block mb-0.5">Onay Recall (Duyarlılık)</span>
+            <div class="text-2xl sm:text-3xl font-black text-amber-600">%98.82</div>
+            <span class="text-[11px] text-slate-500 mt-1 block">85 onaydan 84'ü yakalandı</span>
+          </div>
+
+          <div class="clean-card p-4 text-center">
+            <span class="text-[11px] uppercase font-bold text-slate-500 block mb-0.5">Onay F1-Skoru</span>
+            <div class="text-2xl sm:text-3xl font-black text-indigo-600">%90.32</div>
+            <span class="text-[11px] text-slate-500 mt-1 block">Precision-Recall dengesi</span>
+          </div>
+
+        </div>
+
+        <!-- Sınıflandırma Tablosu -->
+        <div class="clean-card overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="border-b border-slate-200 bg-slate-50 text-slate-700 uppercase text-[11px]">
+                <tr>
+                  <th class="py-2.5 px-3">Sınıf</th>
+                  <th class="py-2.5 px-3">Kesinlik (Precision)</th>
+                  <th class="py-2.5 px-3">Duyarlılık (Recall)</th>
+                  <th class="py-2.5 px-3">F1-Skoru</th>
+                  <th class="py-2.5 px-3">Destek</th>
+                  <th class="py-2.5 px-3">Finansal Karar Anlamı</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 text-slate-700">
+                <tr class="hover:bg-slate-50/80">
+                  <td class="py-2.5 px-3 font-bold text-rose-700">Ret (N / 0)</td>
+                  <td class="py-2.5 px-3 font-mono font-bold">0.95 (%95)</td>
+                  <td class="py-2.5 px-3 font-mono">0.55 (%55)</td>
+                  <td class="py-2.5 px-3 font-mono">0.70 (%70)</td>
+                  <td class="py-2.5 px-3 text-slate-500">38 başvuru</td>
+                  <td class="py-2.5 px-3 text-slate-600 text-[11px]">Model "Ret" dediğinde %95 kesinlikle haklıdır.</td>
+                </tr>
+                <tr class="hover:bg-slate-50/80">
+                  <td class="py-2.5 px-3 font-bold text-emerald-700">Onay (Y / 1)</td>
+                  <td class="py-2.5 px-3 font-mono">0.83 (%83)</td>
+                  <td class="py-2.5 px-3 font-mono font-bold text-emerald-700">0.99 (%99)</td>
+                  <td class="py-2.5 px-3 font-mono font-bold text-emerald-700">0.90 (%90)</td>
+                  <td class="py-2.5 px-3 text-slate-500">85 başvuru</td>
+                  <td class="py-2.5 px-3 text-slate-600 text-[11px]">Krediyi ödeyecek müşteriler neredeyse sıfır kayıpla (%99) yakalandı.</td>
+                </tr>
+                <tr class="bg-slate-50/60 font-semibold text-slate-900">
+                  <td class="py-2.5 px-3">Genel / Ağırlıklı Ort.</td>
+                  <td class="py-2.5 px-3 font-mono">0.87 (%87)</td>
+                  <td class="py-2.5 px-3 font-mono">0.85 (%85)</td>
+                  <td class="py-2.5 px-3 font-mono">0.84 (%84)</td>
+                  <td class="py-2.5 px-3 text-slate-500">123 başvuru</td>
+                  <td class="py-2.5 px-3 text-blue-700 text-[11px]">Toplam 105 doğru tahmin (%85.37 genel doğruluk)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- SLAYT 8: PARAMETRE ETKİ ANALİZİ (ODDS RATIO) -->
+    <!-- ===================================================================== -->
+    <section id="slide-7" class="slide">
+      <div class="space-y-5">
+        
+        <div class="border-b border-slate-200 pb-3">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600">Açıklanabilirlik (Explainability)</span>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900">Parametre Etki Analizi: Katsayılar (β) ve Odds Ratio</h2>
+          <p class="text-xs sm:text-sm text-slate-600 mt-0.5">Hangi faktör kredi onay ihtimalini kaç kat artırıyor veya azaltıyor?</p>
+        </div>
+
+        <!-- Katsayılar ve Odds Ratio Tablosu -->
+        <div class="clean-card overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="border-b border-slate-200 bg-slate-50 text-slate-700 uppercase text-[11px]">
+                <tr>
+                  <th class="py-2.5 px-3">Sıra</th>
+                  <th class="py-2.5 px-3">Parametre</th>
+                  <th class="py-2.5 px-3">Beta (β)</th>
+                  <th class="py-2.5 px-3">Odds Ratio (e^β)</th>
+                  <th class="py-2.5 px-3">Etki Yönü</th>
+                  <th class="py-2.5 px-3">Finansal Karar Anlamı</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 text-slate-700 font-mono text-[11px]">
+                
+                <tr class="bg-emerald-50/50">
+                  <td class="py-2.5 px-3 font-bold text-emerald-800 font-sans">1</td>
+                  <td class="py-2.5 px-3 font-bold text-emerald-800">Credit_History</td>
+                  <td class="py-2.5 px-3 text-emerald-700 font-bold">+1.2036</td>
+                  <td class="py-2.5 px-3 font-black text-emerald-800 text-xs">3.332x</td>
+                  <td class="py-2.5 px-3 font-sans font-bold text-emerald-800">Çok Güçlü (+)</td>
+                  <td class="py-2.5 px-3 font-sans text-slate-800 text-xs">Temiz sicil onay ihtimalini <strong>3.33 kat</strong> artırır! En belirleyici faktör.</td>
+                </tr>
+
+                <tr>
+                  <td class="py-2.5 px-3 text-slate-500 font-sans">2</td>
+                  <td class="py-2.5 px-3 font-bold text-blue-800">Education</td>
+                  <td class="py-2.5 px-3 text-blue-700">+0.1460</td>
+                  <td class="py-2.5 px-3 font-bold text-blue-800">1.157x</td>
+                  <td class="py-2.5 px-3 font-sans text-blue-800">Pozitif (+)</td>
+                  <td class="py-2.5 px-3 font-sans text-slate-700">Üniversite mezuniyeti onay şansını <strong>%15.7</strong> artırır.</td>
+                </tr>
+
+                <tr>
+                  <td class="py-2.5 px-3 text-slate-500 font-sans">3</td>
+                  <td class="py-2.5 px-3 font-bold text-blue-800">ApplicantIncome</td>
+                  <td class="py-2.5 px-3 text-blue-700">+0.0542</td>
+                  <td class="py-2.5 px-3 font-bold text-blue-800">1.056x</td>
+                  <td class="py-2.5 px-3 font-sans text-blue-800">Pozitif (+)</td>
+                  <td class="py-2.5 px-3 font-sans text-slate-700">Aylık nakit gelir arttıkça ödeme gücü onay ihtimalini destekler.</td>
+                </tr>
+
+                <tr>
+                  <td class="py-2.5 px-3 text-slate-500 font-sans">4</td>
+                  <td class="py-2.5 px-3 font-bold text-blue-800">Property_Area</td>
+                  <td class="py-2.5 px-3 text-blue-700">+0.0431</td>
+                  <td class="py-2.5 px-3 font-bold text-blue-800">1.044x</td>
+                  <td class="py-2.5 px-3 font-sans text-blue-800">Pozitif (+)</td>
+                  <td class="py-2.5 px-3 font-sans text-slate-700">Kentsel teminat likiditesi onay şansını hafif artırır.</td>
+                </tr>
+
+                <tr class="bg-slate-50/50">
+                  <td class="py-2.5 px-3 text-slate-400 font-sans">5</td>
+                  <td class="py-2.5 px-3 font-bold text-slate-600">Loan_Amount_Term</td>
+                  <td class="py-2.5 px-3 text-slate-500">-0.0009</td>
+                  <td class="py-2.5 px-3 text-slate-600">0.999x</td>
+                  <td class="py-2.5 px-3 font-sans text-slate-500">Nötr (~0)</td>
+                  <td class="py-2.5 px-3 font-sans text-slate-500">Odds ~1.000 olduğundan karar üzerinde etkisi neredeyse sıfırdır.</td>
+                </tr>
+
+                <tr class="bg-rose-50/50">
+                  <td class="py-2.5 px-3 font-bold text-rose-800 font-sans">6</td>
+                  <td class="py-2.5 px-3 font-bold text-rose-800">LoanAmount</td>
+                  <td class="py-2.5 px-3 text-rose-700 font-bold">-0.0762</td>
+                  <td class="py-2.5 px-3 font-black text-rose-800 text-xs">0.927x</td>
+                  <td class="py-2.5 px-3 font-sans font-bold text-rose-800">Ters / Negatif (-)</td>
+                  <td class="py-2.5 px-3 font-sans text-slate-800 text-xs">Talep edilen borç büyüdükçe anapara riski arttığı için onay şansı her birimde <strong>%7.3 azalır</strong>.</td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Bankacılık Anlamı Kutusu -->
+        <div class="p-3.5 bg-blue-50/60 border border-blue-200 rounded-xl text-xs text-slate-700 leading-relaxed flex items-start gap-2.5">
+          <span class="text-lg">💡</span>
+          <div>
+            <strong class="text-blue-900 font-bold">Akademik & Sektörel Yorum:</strong> Lojistik Regresyonun öğrendiği katsayılar bankacılık iktisadı ile <strong>%100 tutarlıdır</strong>. 
+            Bankalar için en kritik unsur geçmiş ödeme sadakatidir (Credit History, +1.20). Talep edilen kredi tutarı büyüdükçe (LoanAmount, -0.076) risk yükselmekte ve model doğal bir fren mekanizması işletmektedir.
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- SLAYT 9: CANLI TAHMİN SİMÜLATÖRÜ VE GENEL SONUÇ -->
+    <!-- ===================================================================== -->
+    <section id="slide-8" class="slide">
+      <div class="space-y-5">
+        
+        <div class="border-b border-slate-200 pb-3">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600">Uygulama & Simülasyon</span>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900">Canlı Karar Destek Simülatörü ve Genel Sonuç</h2>
+          <p class="text-xs sm:text-sm text-slate-600 mt-0.5">Eğitilen modelin gerçek matematiksel katsayılarıyla anlık kredi skoru hesaplayın (predict.py simülatörü):</p>
+        </div>
+
+        <!-- İnteraktif Panel -->
+        <div class="clean-card p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+              <span>⚙️</span> İnteraktif Kredi Değerlendirme Aracı
+            </h3>
+            <span class="text-[11px] font-mono text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+              predict.py motoru
+            </span>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+            <div>
+              <label class="block text-slate-600 mb-1 font-semibold">Aylık Gelir ($)</label>
+              <input type="number" id="sim-gelir" value="6000" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono">
+            </div>
+
+            <div>
+              <label class="block text-slate-600 mb-1 font-semibold">Talep Kredi ($bin)</label>
+              <input type="number" id="sim-kredi" value="130" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono">
+            </div>
+
+            <div>
+              <label class="block text-slate-600 mb-1 font-semibold">Vade (Ay)</label>
+              <input type="number" id="sim-vade" value="360" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono">
+            </div>
+
+            <div>
+              <label class="block text-slate-600 mb-1 font-semibold">Kredi Sicili (Credit_History)</label>
+              <select id="sim-sicil" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="1">1 - Temiz Sicil (Düzenli Ödemiş)</option>
+                <option value="0">0 - Sorunlu / Gecikmeli</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-slate-600 mb-1 font-semibold">Eğitim Durumu</label>
+              <select id="sim-egitim" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="1">1 - Üniversite / Lisans Mezunu</option>
+                <option value="0">0 - Mezun Değil</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-slate-600 mb-1 font-semibold">İkamet Bölgesi</label>
+              <select id="sim-bolge" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="1">1 - Semiurban (Yarı Kentsel)</option>
+                <option value="2">2 - Urban (Şehir Merkezi)</option>
+                <option value="0">0 - Rural (Kırsal)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Hesaplama Çıktı Kutusu -->
+          <div id="sim-sonuc-kutusu" class="rounded-xl p-4 border flex flex-col sm:flex-row items-center justify-between gap-3 transition-all bg-emerald-50 border-emerald-200">
+            <div>
+              <span class="text-[11px] uppercase font-bold text-slate-500 block">Model Kararı</span>
+              <div id="sim-karar-metni" class="text-lg font-black text-emerald-800">✅ KREDİ ONAYLANDI (Y)</div>
+              <p id="sim-aciklama" class="text-xs text-slate-600 mt-0.5">Model müşteri riskini düşük buldu ve onay kararı üretti.</p>
+            </div>
+
+            <div class="text-center sm:text-right">
+              <span class="text-[11px] uppercase font-bold text-slate-500 block">Hesaplanan Onay Olasılığı</span>
+              <div id="sim-olasilik" class="text-3xl font-black text-emerald-700 font-mono">%79.9</div>
+              <span class="text-[10px] text-slate-500 font-mono">Karar Eşiği: %50.0</span>
+            </div>
+          </div>
+
+          <!-- Senaryo Kısayolları -->
+          <div class="flex flex-wrap items-center justify-between gap-2 text-xs pt-1">
+            <span class="text-slate-500 font-medium">Örnek Senaryo Testleri:</span>
+            <div class="flex gap-2">
+              <button type="button" onclick="loadScenario(6000, 130, 360, 1, 1, 1)" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-blue-800 border border-slate-300 font-medium transition-colors">
+                Senaryo 1: Temiz Sicilli Müşteri
+              </button>
+              <button type="button" onclick="loadScenario(15000, 140, 360, 0, 1, 2)" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-rose-800 border border-slate-300 font-medium transition-colors">
+                Senaryo 2: Yüksek Gelirli / Bozuk Sicilli
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Proje Nihai Sonuç Özeti -->
+        <div class="clean-card p-4 border-l-4 border-l-blue-600 space-y-1.5">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-blue-900 flex items-center gap-1.5">
+            <span>🎓</span> Akademik Değerlendirme & Sonuç
+          </h4>
+          <p class="text-xs text-slate-700 leading-relaxed">
+            Bu yüksek lisans çalışması; karmaşık ve denetlenemeyen kara kutu modeller yerine doğru ön işleme (medyan doldurma, data leakage önleyen StandardScaler ve katmanlı bölme) ile desteklenen <strong>Lojistik Regresyon modelinin %85.37 doğruluk ve 0.8248 AUC skoruna ulaştığını</strong> kanıtlamıştır. Odds Ratio analizleri, bankacılıkta geçmiş borç sadakatinin gelirden çok daha baskın bir risk belirleyicisi olduğunu doğrulamıştır.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- ALT KONTROL VE GEZİNME ÇUBUĞU (SUNUM YÖNETİMİ) -->
+  <!-- ========================================================================= -->
+  <footer id="slide-controls" class="sticky bottom-0 bg-white/95 backdrop-blur border-t border-slate-200 px-4 py-3 sm:px-6 z-40 shadow-xs">
+    <div class="max-w-5xl mx-auto flex items-center justify-between">
+      
+      <button id="prev-btn" class="bg-white hover:bg-slate-100 text-slate-700 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-1.5 border border-slate-300 transition-colors shadow-2xs disabled:opacity-40 disabled:cursor-not-allowed">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        <span>Önceki</span>
+      </button>
+
+      <div class="flex items-center gap-2">
+        <div class="text-xs text-slate-500 font-mono font-medium">
+          Slayt <span id="current-slide-num" class="text-blue-700 font-bold">1</span> / <span id="total-slides-num">9</span>
+        </div>
+        <span class="hidden md:inline-block text-[11px] text-slate-400 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+          Klavye: ← / → veya Boşluk
+        </span>
+      </div>
+
+      <button id="next-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-1.5 transition-colors shadow-xs disabled:opacity-40 disabled:cursor-not-allowed">
+        <span>Sonraki</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+
+    </div>
+  </footer>
+
+  <!-- ========================================================================= -->
+  <!-- ETKİLEŞİM, SÜREÇ YÖNETİMİ VE MATEMATİK MOTORU (JAVASCRIPT) -->
+  <!-- ========================================================================= -->
+  <script>
+    // -------------------------------------------------------------------------
+    // 1. Slayt Yönetimi ve Klavye Kontrolleri
+    // -------------------------------------------------------------------------
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    const progressBar = document.getElementById('progress-bar');
+    const slideSelect = document.getElementById('slide-select');
+    const currentNumSpan = document.getElementById('current-slide-num');
+    const totalNumSpan = document.getElementById('total-slides-num');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const modeToggleBtn = document.getElementById('mode-toggle-btn');
+    const modeBtnText = document.getElementById('mode-btn-text');
+    const fullscreenBtn = document.getElementById('fullscreen-btn');
+    let isReportMode = false;
+
+    totalNumSpan.textContent = totalSlides;
+
+    function showSlide(index) {
+      if (index < 0 || index >= totalSlides) return;
+      
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === index);
+      });
+
+      currentSlide = index;
+      currentNumSpan.textContent = index + 1;
+      slideSelect.value = index;
+
+      // Üst ilerleme çubuğu
+      const progressPercent = ((index + 1) / totalSlides) * 100;
+      progressBar.style.width = progressPercent + '%';
+
+      // Buton aktiflik durumu
+      prevBtn.disabled = index === 0;
+      nextBtn.disabled = index === totalSlides - 1;
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    prevBtn.addEventListener('click', () => showSlide(currentSlide - 1));
+    nextBtn.addEventListener('click', () => showSlide(currentSlide + 1));
+    slideSelect.addEventListener('change', (e) => showSlide(parseInt(e.target.value)));
+
+    // Klavye Yön Tuşları
+    document.addEventListener('keydown', (e) => {
+      // Input odaklıyken tuşları kilitleme
+      if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        if (!isReportMode && currentSlide < totalSlides - 1) {
+          e.preventDefault();
+          showSlide(currentSlide + 1);
+        }
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        if (!isReportMode && currentSlide > 0) {
+          e.preventDefault();
+          showSlide(currentSlide - 1);
+        }
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullScreen();
+      } else if (e.key === 'r' || e.key === 'R') {
+        toggleReportMode();
+      }
+    });
+
+    // Rapor Modu / Slayt Modu Geçişi
+    function toggleReportMode() {
+      isReportMode = !isReportMode;
+      document.body.classList.toggle('report-mode', isReportMode);
+      if (isReportMode) {
+        modeBtnText.textContent = "Slayt Modu";
+      } else {
+        modeBtnText.textContent = "Rapor Modu";
+        showSlide(currentSlide);
+      }
+    }
+    modeToggleBtn.addEventListener('click', toggleReportMode);
+
+    // Tam Ekran Desteği
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        }
+      }
+    }
+    fullscreenBtn.addEventListener('click', toggleFullScreen);
+
+    // -------------------------------------------------------------------------
+    // 2. Sunum Süresi Sayacı (Presenter Timer)
+    // -------------------------------------------------------------------------
+    let elapsedSeconds = 0;
+    const timerEl = document.getElementById('presentation-timer');
+    setInterval(() => {
+      elapsedSeconds++;
+      const mins = String(Math.floor(elapsedSeconds / 60)).padStart(2, '0');
+      const secs = String(elapsedSeconds % 60).padStart(2, '0');
+      timerEl.textContent = `${mins}:${secs}`;
+    }, 1000);
+
+    // -------------------------------------------------------------------------
+    // 3. CANLI LOJİSTİK REGRESYON MATEMATİK MOTORU (predict.py ile %100 Birebir)
+    // -------------------------------------------------------------------------
+    const MODEL_INTERCEPT = 0.78932475;
+    const MODEL_COEFS = [
+      0.05419478,   // ApplicantIncome
+      -0.07620587,  // LoanAmount
+      -0.00091903,  // Loan_Amount_Term
+      1.20355192,   // Credit_History
+      0.14601162,   // Education
+      0.04308889    // Property_Area
+    ];
+
+    const SCALER_MEANS = [5403.459, 145.752, 342.410, 0.855, 0.782, 1.037];
+    const SCALER_SCALES = [6104.065, 84.039, 64.376, 0.352, 0.413, 0.787];
+
+    function calculatePrediction() {
+      const gelir = parseFloat(document.getElementById('sim-gelir').value) || 0;
+      const kredi = parseFloat(document.getElementById('sim-kredi').value) || 0;
+      const vade = parseFloat(document.getElementById('sim-vade').value) || 360;
+      const sicil = parseFloat(document.getElementById('sim-sicil').value);
+      const egitim = parseFloat(document.getElementById('sim-egitim').value);
+      const bolge = parseFloat(document.getElementById('sim-bolge').value);
+
+      const rawValues = [gelir, kredi, vade, sicil, egitim, bolge];
+
+      // 1. Z-Skoru Standartlaştırması: z_i = (x_i - mean_i) / scale_i
+      let zTotal = MODEL_INTERCEPT;
+      for (let i = 0; i < rawValues.length; i++) {
+        const scaledVal = (rawValues[i] - SCALER_MEANS[i]) / SCALER_SCALES[i];
+        zTotal += scaledVal * MODEL_COEFS[i];
+      }
+
+      // 2. Sigmoid Fonksiyonu: P = 1 / (1 + e^-z)
+      const prob = 1 / (1 + Math.exp(-zTotal));
+      const probPercent = prob * 100;
+      const isApproved = prob >= 0.50;
+
+      // Arayüzü Güncelleme
+      const box = document.getElementById('sim-sonuc-kutusu');
+      const kararEl = document.getElementById('sim-karar-metni');
+      const olasilikEl = document.getElementById('sim-olasilik');
+      const aciklamaEl = document.getElementById('sim-aciklama');
+
+      olasilikEl.textContent = `%${probPercent.toFixed(1)}`;
+
+      if (isApproved) {
+        kararEl.textContent = "✅ KREDİ ONAYLANDI (Y)";
+        kararEl.className = "text-lg font-black text-emerald-800";
+        olasilikEl.className = "text-3xl font-black text-emerald-700 font-mono";
+        box.className = "rounded-xl p-4 border flex flex-col sm:flex-row items-center justify-between gap-3 transition-all bg-emerald-50 border-emerald-200";
+        aciklamaEl.textContent = "Müşteri risk profili güvenli bulundu; kredi başvurusu onaylandı.";
+      } else {
+        kararEl.textContent = "❌ KREDİ REDDEDİLDİ (N)";
+        kararEl.className = "text-lg font-black text-rose-800";
+        olasilikEl.className = "text-3xl font-black text-rose-700 font-mono";
+        box.className = "rounded-xl p-4 border flex flex-col sm:flex-row items-center justify-between gap-3 transition-all bg-rose-50 border-rose-200";
+        aciklamaEl.textContent = "Kredi geri ödeme olasılığı eşik değerin (%50) altında kaldı; riskli görüldü.";
+      }
+    }
+
+    // Input dinleyicileri
+    ['sim-gelir', 'sim-kredi', 'sim-vade', 'sim-sicil', 'sim-egitim', 'sim-bolge'].forEach(id => {
+      document.getElementById(id).addEventListener('input', calculatePrediction);
+      document.getElementById(id).addEventListener('change', calculatePrediction);
+    });
+
+    // Hazır Senaryo Yükleme
+    function loadScenario(gelir, kredi, vade, sicil, egitim, bolge) {
+      document.getElementById('sim-gelir').value = gelir;
+      document.getElementById('sim-kredi').value = kredi;
+      document.getElementById('sim-vade').value = vade;
+      document.getElementById('sim-sicil').value = sicil;
+      document.getElementById('sim-egitim').value = egitim;
+      document.getElementById('sim-bolge').value = bolge;
+      calculatePrediction();
+    }
+
+    // Başlangıç durumunu yükle
+    showSlide(0);
+    calculatePrediction();
+  </script>
+</body>
+</html>
