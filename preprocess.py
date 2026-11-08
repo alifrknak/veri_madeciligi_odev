@@ -17,7 +17,7 @@ FEATURES = [
 LABEL = 'Loan_Status'     # Hedef etiket (1: Onay, 0: Ret)
 
 
-def load_and_preprocess(file_path='train.csv'):
+def load_and_preprocess(file_path='dataset.csv'):
     """Ham veriyi okur, temizler, kodlar, böler ve ölçekler."""
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"HATA: '{file_path}' dosyası bulunamadı! Lütfen dosyanın proje dizininde olduğundan emin olun.")
